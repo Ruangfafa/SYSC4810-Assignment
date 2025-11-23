@@ -14,17 +14,18 @@ def authorization(request: Request, uuid: str) -> bool:
     role_permission = get_role_permission(user_role)
 
     if role_permission[request.value] == 1:
-        logger.info(AuthorizationServiceCons.L_PERM_ALLOW_1 % request.name)
+        logger.info(AuthorizationServiceCons.L_PERM_ALLOW_1 % (request, uuid))
         return True
 
     if role_permission[request.value] == 2:
         now = datetime.now(ZoneInfo(TIME_ZONE))
         cur_time = now.hour * 100 + now.minute
+        time_str = now.strftime(AuthorizationServiceCons.TIME_FORMAT)
 
         if 900 <= cur_time < 1700:
-            logger.info(AuthorizationServiceCons.L_PERM_ALLOW_2 % request.name)
+            logger.info(AuthorizationServiceCons.L_PERM_ALLOW_2 % (time_str, request, uuid))
             return True
-        logger.warning(AuthorizationServiceCons.L_PERM_DENIED_2 % request.name)
+        logger.warning(AuthorizationServiceCons.L_PERM_DENIED_2 % (time_str, request, uuid))
 
-    logger.warning(AuthorizationServiceCons.L_PERM_DENIED % (request.name, user_role.name, uuid))
+    logger.warning(AuthorizationServiceCons.L_PERM_DENIED % (request, user_role, uuid))
     return False
