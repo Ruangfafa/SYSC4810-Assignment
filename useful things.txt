@@ -1,0 +1,13 @@
+to freeze the python requirements
+    python -m pip freeze > requirements.txt
+
+to download the python requirements
+    python -m -r requirements.txt
+
+to use the venv enviroment
+    .\.venv\Scripts\activate   # Windows
+    source .venv/bin/activate  # Linux/macOS
+
+to pack
+	python -m pip install pyinstaller
+	python -m PyInstaller --onefile -p . app/application.py
