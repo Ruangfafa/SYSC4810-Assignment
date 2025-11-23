@@ -1,0 +1,43 @@
+;[uuid]
+;salt_hex
+;hash_hex
+
+[509c5eb4-10b9-48b6-b37f-fcabae8c33e2]
+salt_hex =
+hash_hex =
+
+[dc2cb808-8440-40a9-a4f6-73be57776cf3]
+salt_hex =
+hash_hex =
+
+[acb1db25-3ea1-4c24-a46b-f6a4a10a7958]
+salt_hex =
+hash_hex =
+
+[49bc34c9-e17e-4ab3-ba72-a062decc947c]
+salt_hex =
+hash_hex =
+
+[3d40ee66-3d53-4f1f-ab80-66d7ce0c33d6]
+salt_hex =
+hash_hex =
+
+[544295ec-3bf3-4c73-a0c1-faa8c52eca9b]
+salt_hex =
+hash_hex =
+
+[7088783d-30db-493c-a9a9-1c6a38f338b5]
+salt_hex =
+hash_hex =
+
+[5e037e76-9222-4cb1-a772-4ed7a63bb14b]
+salt_hex =
+hash_hex =
+
+[c01176a0-158b-40b8-8712-a8faf89f0cc4]
+salt_hex =
+hash_hex =
+
+[90eb6238-c3ad-42f4-a8eb-62be9e2cc3e1]
+salt_hex =
+hash_hex =
