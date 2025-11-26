@@ -12,11 +12,14 @@ class MysqlServiceCons:
     L_SUC_FETCH_USERNAME = "Username '%s' has UUID '%s'"
     L_FAIL_FETCH_USERNAME = "Username '%s' not found in user.ini"
     L_FAIL_FETCH_PASSWD = "UUID '%s' not found in passwd file"
+    L_USERNAME_EXISTS = "Username '%s' already exists"
+    L_USERNAME_AVAILABLE = "Username '%s' is available"
 
     ROLE = "role"
     PERMISSION = "permission"
     COMMA = ","
     USERNAME = "username"
+    NAME = "name"
     SALT = "salt_hex"
     HASH = "hash_hex"
 
