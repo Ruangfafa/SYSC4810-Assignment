@@ -5,7 +5,7 @@ so the database service here are actually ini reader service
 import configparser
 from typing import List, Tuple
 
-from app.common.config_loader import USER_INI_FILE, ROLE_PERMISSION_FILE, PASSWD_FILE
+from app.common.config_loader import USER_INI_FILE, ROLE_PERMISSION_FILE, PASSWD_FILE, WEAK_PASSWD_FILE
 from app.common.constant import MysqlServiceCons
 from app.common.enum import Role
 from app.service.logging_service import get_logger
@@ -63,3 +63,12 @@ def get_passwd(uuid: str) -> Tuple[str, str]:
     hash_hex = config[uuid][MysqlServiceCons.HASH].strip()
 
     return salt_hex, hash_hex
+
+def traversal_weak_passwd_list(passwd: str) -> bool:
+    config = configparser.ConfigParser()
+    config.read(WEAK_PASSWD_FILE)
+
+    raw = config["weak_passwd"]["list"]
+    weak_set = {item.strip().lower() for item in raw.split(",")}
+
+    return passwd.strip().lower() in weak_set
