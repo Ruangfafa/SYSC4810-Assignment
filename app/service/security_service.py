@@ -87,8 +87,10 @@ def password_adhere(password: str, username: str) -> bool:
         logger.warning("Password too weak")
         return False
 
+    if not re.fullmatch(r"[A-Za-z0-9!@#$%*&]+", password):
+        logger.warning("Password contains invalid characters")
+        return False
+
     logger.info("Password_adhere Pass")
     return True
 
-def register():
-    pass
