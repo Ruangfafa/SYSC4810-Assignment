@@ -1,4 +1,5 @@
 import hashlib
+import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -6,7 +7,8 @@ from app.common.config_loader import TIME_ZONE
 from app.common.constant import SecurityServiceCons
 from app.common.enum import Request
 from app.service.logging_service import get_logger
-from app.service.mysql_service import get_role, get_role_permission, get_passwd, get_uuid_by_username
+from app.service.mysql_service import get_role, get_role_permission, get_passwd, get_uuid_by_username, \
+    traversal_weak_passwd_list
 
 logger = get_logger(SecurityServiceCons.LOGGER)
 
@@ -56,8 +58,37 @@ def authentication(username, password) -> bool:
         logger.warning(SecurityServiceCons.L_FAIL_LOGIN % username)
         return False
 
-def password_adhere(password: str) -> bool:
-    pass
+def password_adhere(password: str, username: str) -> bool:
+    if not (8 <= len(password) <= 12):
+        logger.warning("Password length should be between 8 and 12")
+        return False
+
+    if not re.search(r"[A-Z]", password):
+        logger.warning("Password must contain capital letters")
+        return False
+
+    if not re.search(r"[a-z]", password):
+        logger.warning("Password must contain lowercase letters")
+        return False
+
+    if not re.search(r"[0-9]", password):
+        logger.warning("Password must contain numbers")
+        return False
+
+    if not re.search(r"[!@#$%*&]", password):
+        logger.warning("Password must contain at least one special character {! @ # $ % * &}")
+        return False
+
+    if username and password.lower() == username.lower():
+        logger.warning("Password must not be same as username")
+        return False
+
+    if traversal_weak_passwd_list(password):
+        logger.warning("Password too weak")
+        return False
+
+    logger.info("Password_adhere Pass")
+    return True
 
 def register():
     pass
