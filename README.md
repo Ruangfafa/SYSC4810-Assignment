@@ -94,7 +94,8 @@ Password must satisfy:
 Run the application:
 
 ```
-python3 app/application.py
+cd ../SYSC4810-Assignment-main/
+python3 -m app.application
 ```
 
 Menu:
