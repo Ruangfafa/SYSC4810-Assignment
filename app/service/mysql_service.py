@@ -70,8 +70,8 @@ def traversal_weak_passwd_list(passwd: str) -> bool:
     config = configparser.ConfigParser()
     config.read(WEAK_PASSWD_FILE)
 
-    raw = config["weak_passwd"]["list"]
-    weak_set = {item.strip().lower() for item in raw.split(",")}
+    raw = config[MysqlServiceCons.WEAK_PASSED][MysqlServiceCons.LIST]
+    weak_set = {item.strip().lower() for item in raw.split(MysqlServiceCons.COMMA)}
 
     return passwd.strip().lower() in weak_set
 
@@ -94,7 +94,7 @@ def insert_user(username: str, name: str, role: Role, passwd: str):
     username_clean = username.strip().lower()
 
     if traversal_username_exist(username):
-        logger.warning("Username %s is already registered", username)
+        logger.warning(MysqlServiceCons.L_USERNAME_EXISTS, username)
         return
 
     while True:
@@ -114,7 +114,7 @@ def insert_user(username: str, name: str, role: Role, passwd: str):
     salt_hex, hash_hex = password_to_pbkdf2(passwd)
     insert_passwd(new_uuid, salt_hex, hash_hex)
 
-    logger.info("Inserted new user '%s' (%s) with role %s", username, new_uuid, role.value)
+    logger.info(MysqlServiceCons.L_SUC_INSERT_USER, username, new_uuid, role.value)
 
 
 def insert_passwd(uuid: str, salt_hex: str, hash_hex: str):
@@ -129,4 +129,4 @@ def insert_passwd(uuid: str, salt_hex: str, hash_hex: str):
     with open(PASSWD_FILE, "w") as f:
         config.write(f)
 
-    logger.info("Inserted password record for UUID %s", uuid)
+    logger.info(MysqlServiceCons.L_SUC_INSERT_PASSWD, uuid)

@@ -34,18 +34,19 @@ def authorization(request: Request, uuid: str) -> bool:
     return False
 
 def authentication(username, password) -> bool:
-    salt_hex, expect_hash_hex = get_passwd(get_uuid_by_username(username))
-
-    if not salt_hex or not expect_hash_hex:
-        logger.warning(SecurityServiceCons.L_FAIL_LOGIN_2 % username, 100)
+    try:
+        uuid = get_uuid_by_username(username)
+        salt_hex, expect_hash_hex = get_passwd(uuid)
+    except Exception as e:
+        logger.warning(SecurityServiceCons.L_FAIL_LOGIN_3 % (username, str(e)))
         return False
 
     salt_byte = bytes.fromhex(salt_hex)
     expect_hash_byte = bytes.fromhex(expect_hash_hex)
 
     input_hash_byte = hashlib.pbkdf2_hmac(
-        "sha256",
-        password.encode("utf-8"),
+        SecurityServiceCons.HASH_TYPE,
+        password.encode(SecurityServiceCons.DECODE_TYPE),
         salt_byte,
         100000,
         dklen=32
@@ -58,39 +59,40 @@ def authentication(username, password) -> bool:
         logger.warning(SecurityServiceCons.L_FAIL_LOGIN % username)
         return False
 
+
 def password_adhere(password: str, username: str) -> bool:
     if not (8 <= len(password) <= 12):
-        logger.warning("Password length should be between 8 and 12")
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_1)
         return False
 
-    if not re.search(r"[A-Z]", password):
-        logger.warning("Password must contain capital letters")
+    if not re.search(SecurityServiceCons.RE_1, password):
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_2)
         return False
 
-    if not re.search(r"[a-z]", password):
-        logger.warning("Password must contain lowercase letters")
+    if not re.search(SecurityServiceCons.RE_2, password):
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_3)
         return False
 
-    if not re.search(r"[0-9]", password):
-        logger.warning("Password must contain numbers")
+    if not re.search(SecurityServiceCons.RE_3, password):
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_4)
         return False
 
-    if not re.search(r"[!@#$%*&]", password):
-        logger.warning("Password must contain at least one special character {! @ # $ % * &}")
+    if not re.search(SecurityServiceCons.RE_4, password):
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_5)
         return False
 
     if username and password.lower() == username.lower():
-        logger.warning("Password must not be same as username")
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_6)
         return False
 
     if traversal_weak_passwd_list(password):
-        logger.warning("Password too weak")
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_7)
         return False
 
-    if not re.fullmatch(r"[A-Za-z0-9!@#$%*&]+", password):
-        logger.warning("Password contains invalid characters")
+    if not re.fullmatch(SecurityServiceCons.RE_5, password):
+        logger.warning(SecurityServiceCons.L_FAIL_PASSWD_ADHERE_8)
         return False
 
-    logger.info("Password_adhere Pass")
+    logger.info(SecurityServiceCons.L_SUC_PASSWD_ADHERE)
     return True
 
