@@ -1,3 +1,7 @@
+"""
+Centralized constants for the whole application — all the fixed strings,
+log messages, and config keys live here.
+"""
 class ApplicationCons:
     LOGGER = "application"
 

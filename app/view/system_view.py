@@ -1,3 +1,9 @@
+"""
+This module implements the top-level text-based user interface for the assignment.
+It only handles menu display, user interaction, and routing logic (login, register,
+and selecting available requests). All authentication, authorization, and data
+operations are delegated to the underlying service modules.
+"""
 from app.service.security_service import authentication, authorization, password_adhere
 from app.service.mysql_service import (
     traversal_username_exist,
