@@ -1,3 +1,11 @@
+"""
+This logging module is taken from my previously developed repositories.
+I frequently reuse it in different projects as a lightweight helper
+for generating colored console logs and (optionally) daily-rotating log files.
+It acts as a convenient replacement for print(), without introducing
+any additional logic specific to this assignment.
+"""
+
 import logging
 import colorlog
 import os

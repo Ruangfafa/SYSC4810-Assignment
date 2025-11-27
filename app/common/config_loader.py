@@ -1,3 +1,12 @@
+"""
+This configuration loader module is reused from my previous projects.
+It centralizes all file path resolutions and environment variable loading
+so that the rest of the application can access configuration values
+without hard-coding paths or relying on fixed directory structures.
+
+It simply provides convenient access to INI files, password files,
+and .env variables, and does not introduce logic specific to this assignment.
+"""
 import os, sys
 from pathlib import Path
 from dotenv import load_dotenv

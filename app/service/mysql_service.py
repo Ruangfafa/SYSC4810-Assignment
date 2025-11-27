@@ -15,6 +15,18 @@ from app.service.security_utils import password_to_pbkdf2
 logger = get_logger(MysqlServiceCons.LOGGER)
 
 def get_role(uuid: str) -> Role:
+    """
+    Retrieve the role value associated with a given user UUID.
+
+    Args:
+        uuid (str): User's UUID.
+
+    Returns:
+        Role: Enum value of the user's role.
+
+    Raises:
+        ValueError: If the UUID does not exist in the user.ini file.
+    """
     logger.info(MysqlServiceCons.L_TRY_FETCH_UUID % uuid)
 
     config = configparser.ConfigParser()
@@ -30,6 +42,15 @@ def get_role(uuid: str) -> Role:
     return Role(role)
 
 def get_role_permission(role: Role) -> List[int]:
+    """
+    Fetch the permission vector (list[int]) associated with a given role.
+
+    Args:
+        role (Role): Role enum.
+
+    Returns:
+        List[int]: The permission vector for this role.
+    """
     config = configparser.ConfigParser()
     config.read(ROLE_PERMISSION_FILE)
 
@@ -40,6 +61,18 @@ def get_role_permission(role: Role) -> List[int]:
     return permission
 
 def get_uuid_by_username(username: str) -> str:
+    """
+    Search the user.ini file and return the UUID associated with a username.
+
+    Args:
+        username (str): Username to search (case-insensitive).
+
+    Returns:
+        str: UUID of the matching user.
+
+    Raises:
+        ValueError: If the username does not exist.
+    """
     config = configparser.ConfigParser()
     config.read(USER_INI_FILE)
 
@@ -55,6 +88,18 @@ def get_uuid_by_username(username: str) -> str:
     raise ValueError(MysqlServiceCons.L_FAIL_FETCH_USERNAME % username)
 
 def get_passwd(uuid: str) -> Tuple[str, str]:
+    """
+    Retrieve the stored password salt and hash for the given UUID.
+
+    Args:
+        uuid (str): User UUID.
+
+    Returns:
+        Tuple[str, str]: (salt_hex, hash_hex)
+
+    Raises:
+        ValueError: If no password entry exists for this UUID.
+    """
     config = configparser.ConfigParser()
     config.read(PASSWD_FILE)
 
@@ -67,6 +112,15 @@ def get_passwd(uuid: str) -> Tuple[str, str]:
     return salt_hex, hash_hex
 
 def traversal_weak_passwd_list(passwd: str) -> bool:
+    """
+    Check whether a password appears in the weak password blacklist.
+
+    Args:
+        passwd (str): Password to test.
+
+    Returns:
+        bool: True if password is weak; False otherwise.
+    """
     config = configparser.ConfigParser()
     config.read(WEAK_PASSWD_FILE)
 
@@ -76,6 +130,15 @@ def traversal_weak_passwd_list(passwd: str) -> bool:
     return passwd.strip().lower() in weak_set
 
 def traversal_username_exist(username: str) -> bool:
+    """
+    Check if a given username already exists in user.ini.
+
+    Args:
+        username (str): Username to test.
+
+    Returns:
+        bool: True if exists, False otherwise.
+    """
     config = configparser.ConfigParser()
     config.read(USER_INI_FILE)
 
@@ -88,6 +151,22 @@ def traversal_username_exist(username: str) -> bool:
     return False
 
 def insert_user(username: str, name: str, role: Role, passwd: str):
+    """
+    Insert a new user into the user.ini and passwd.txt files.
+    A new UUID is generated and associated with the given user info.
+
+    Steps:
+        1. Validate username uniqueness.
+        2. Create a unique UUID.
+        3. Write user data to user.ini.
+        4. Hash password (PBKDF2) and store salt+hash to passwd.txt.
+
+    Args:
+        username (str): Username.
+        name (str): Full name of user.
+        role (Role): Assigned role enum.
+        passwd (str): Plaintext password.
+    """
     config = configparser.ConfigParser()
     config.read(USER_INI_FILE)
 
@@ -118,6 +197,14 @@ def insert_user(username: str, name: str, role: Role, passwd: str):
 
 
 def insert_passwd(uuid: str, salt_hex: str, hash_hex: str):
+    """
+    Insert a password record for a user UUID into passwd.txt.
+
+    Args:
+        uuid (str): User UUID.
+        salt_hex (str): Hex-encoded salt.
+        hash_hex (str): Hex-encoded PBKDF2 hash.
+    """
     config = configparser.ConfigParser()
     config.read(PASSWD_FILE)
 
