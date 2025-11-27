@@ -156,6 +156,19 @@ list = password,123456,qwerty,admin,abc123,...
 
 ---
 
+### Python Requirements
+This project uses Python 3.12 and requires the following dependencies:
+```
+colorlog==6.10.1
+python-dotenv==1.2.1
+```
+You can download and install all required packages using:
+```
+python -m pip install -r requirements.txt
+```
+
+---
+
 ### Notes
 
 * All salts are generated using `os.urandom(16)`  
